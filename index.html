@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+	<h3>Vue Js Conversor</h3>
+	<div id="app">
+		<label for="currency-input">Introduzca la cifra:</label>
+		<div class="currency-input-container">
+			<span class="dollar-sign">$</span>
+			<input type="text" id="currency-input" v-model="currencyValue" @input="formatInput" />
+		</div>
+		<p>Formateo: {{ formattedCurrency }}</p>
+    </div>
+	<script type="module">
+		const app = Vue.createApp({
+			data() {
+				return {
+					currencyValue: ""
+				}
+			},
+			computed: {
+				formattedCurrency() {
+					// format the currency value using a custom method
+					return this.formatCurrency(this.currencyValue);
+				}
+			},
+			methods: {
+				formatCurrency(value) {
+					if (!value) return "";
+					// remove any non-numeric characters except decimal point
+					let numericValue = value.replace(/[^\d.]/g, "");
+					// split into integer and decimal parts
+					let parts = numericValue.split(".");
+					// add comma separators for thousands to integer part
+					parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+					// join integer and decimal parts with a period
+					return "$" + parts.join(".");
+				},
+				formatInput(event) {
+					// remove non-numeric characters except decimal point
+					let input = event.target.value.replace(/[^\d.]/g, "");
+					// add dollar sign to input
+					event.target.value =  input;
+					// format input with comma separators for thousands
+					event.target.value = event.target.value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+					// update data property with formatted input
+					this.currencyValue = event.target.value;
+				}
+			}
+		});
+		app.mount('#app');
+	</script>
+    <style scoped>
+		.currency-input-container {
+			display: flex;
+			align-items: center;
+		}
+
+		.dollar-sign {
+			font-size: 24px;
+			margin-right: 5px;
+			font-weight: bold;
+		}
+
+		input {
+			height: 40px;
+			text-align: center;
+			font-size: 24px;
+			margin: 0;
+			padding-left: 0;
+			border: none;
+			border-bottom: 2px solid #ccc;
+			box-shadow: none;
+			background-color: transparent;
+			color: #333;
+			transition: all 0.3s ease-in-out;
+			font-family: Arial, Helvetica, sans-serif;
+		}
+
+		input:focus {
+			outline: none;
+			border-bottom-color: #007bff;
+		}
+	</style>
+</body>
+</html>
